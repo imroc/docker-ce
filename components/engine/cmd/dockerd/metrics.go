@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 
@@ -8,7 +9,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func startMetricsServer(addr string) error {
+func startMetricsServer(hasExperimental bool, addr string) error {
+	if addr == "" {
+		return nil
+	}
+	if !hasExperimental {
+		return fmt.Errorf("metrics-addr is only supported when experimental is enabled")
+	}
 	if err := allocateDaemonPort(addr); err != nil {
 		return err
 	}

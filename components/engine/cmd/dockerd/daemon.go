@@ -239,14 +239,8 @@ func (cli *DaemonCli) start(opts *daemonOptions) (err error) {
 		return fmt.Errorf("Error validating authorization plugin: %v", err)
 	}
 
-	// TODO: move into startMetricsServer()
-	if cli.Config.MetricsAddress != "" {
-		if !d.HasExperimental() {
-			return fmt.Errorf("metrics-addr is only supported when experimental is enabled")
-		}
-		if err := startMetricsServer(cli.Config.MetricsAddress); err != nil {
-			return err
-		}
+	if err := startMetricsServer(d.HasExperimental(), cli.Config.MetricsAddress); err != nil {
+		return err
 	}
 
 	// TODO: createAndStartCluster()
